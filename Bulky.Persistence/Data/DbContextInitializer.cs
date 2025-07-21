@@ -12,9 +12,17 @@ public class DbContextInitializer(ApplicationDbContext dbContext)
             var data = File.ReadAllText("../Bulky.Persistence/Data/Seeds/Categories.json");
             var categories = JsonSerializer.Deserialize<List<Category>>(data);
             
-            await dbContext.Categories.AddRangeAsync(categories!);
+            await dbContext.AddRangeAsync(categories!);
         }
 
+        if (!dbContext.Products.Any())
+        {
+            var data = File.ReadAllText("../Bulky.Persistence/Data/Seeds/Products.json");
+            var products = JsonSerializer.Deserialize<List<Product>>(data);
+            
+            await dbContext.AddRangeAsync(products!);
+        }
+        
         await dbContext.SaveChangesAsync();
     }
 }

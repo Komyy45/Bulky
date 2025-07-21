@@ -10,5 +10,7 @@ namespace Bulky.Core.Entities
 	public class Category : BaseEntity<int>
 	{
 		public required string Name { get; set; }
+
+		public ICollection<Product> Products { get; set; } = new HashSet<Product>();
 	}
 }

@@ -1,0 +1,92 @@
+[
+    {
+        "Id": 0,
+        "Title": "Clean Code",
+        "Description": "A Handbook of Agile Software Craftsmanship",
+        "ISBN": "9780132350884",
+        "Author": "Robert C. Martin",
+        "Price": 45.99,
+        "CategoryId": 3
+    },
+    {
+        "Id": 0,
+        "Title": "The Pragmatic Programmer",
+        "Description": "Your Journey to Mastery",
+        "ISBN": "9780135957059",
+        "Author": "Andrew Hunt and David Thomas",
+        "Price": 39.99,
+        "CategoryId": 1
+    },
+    {
+        "Id": 0,
+        "Title": "Design Patterns",
+        "Description": "Elements of Reusable Object-Oriented Software",
+        "ISBN": "9780201633610",
+        "Author": "Erich Gamma et al.",
+        "Price": 54.95,
+        "CategoryId": 3
+    },
+    {
+        "Id": 0,
+        "Title": "Refactoring",
+        "Description": "Improving the Design of Existing Code",
+        "ISBN": "9780134757599",
+        "Author": "Martin Fowler",
+        "Price": 49.99,
+        "CategoryId": 2
+    },
+    {
+        "Id": 0,
+        "Title": "Domain-Driven Design",
+        "Description": "Tackling Complexity in the Heart of Software",
+        "ISBN": "9780321125217",
+        "Author": "Eric Evans",
+        "Price": 59.99,
+        "CategoryId": 1
+    },
+    {
+        "Id": 0,
+        "Title": "Introduction to Algorithms",
+        "Description": "Comprehensive guide to algorithms",
+        "ISBN": "9780262033848",
+        "Author": "Cormen, Leiserson, Rivest, and Stein",
+        "Price": 89.99,
+        "CategoryId": 2
+    },
+    {
+        "Id": 0,
+        "Title": "Code Complete",
+        "Description": "A Practical Handbook of Software Construction",
+        "ISBN": "9780735619678",
+        "Author": "Steve McConnell",
+        "Price": 44.99,
+        "CategoryId": 3
+    },
+    {
+        "Id": 0,
+        "Title": "Soft Skills",
+        "Description": "The software developer's life manual",
+        "ISBN": "9781617292392",
+        "Author": "John Sonmez",
+        "Price": 34.99,
+        "CategoryId": 2
+    },
+    {
+        "Id": 0,
+        "Title": "Working Effectively with Legacy Code",
+        "Description": "Strategies for working with legacy systems",
+        "ISBN": "9780131177055",
+        "Author": "Michael Feathers",
+        "Price": 49.99,
+        "CategoryId": 3
+    },
+    {
+        "Id": 0,
+        "Title": "Test-Driven Development by Example",
+        "Description": "Introduction to TDD with practical examples",
+        "ISBN": "9780321146533",
+        "Author": "Kent Beck",
+        "Price": 42.99,
+        "CategoryId": 1
+    }
+]
