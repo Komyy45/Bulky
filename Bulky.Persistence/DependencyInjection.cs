@@ -21,6 +21,8 @@ namespace Bulky.Persistence
 
 			services.AddScoped<IUnitOfWork, UnitOfWork>();
 			
+			services.AddTransient<DbContextInitializer>();
+			
 			return services;
 		}
 	}

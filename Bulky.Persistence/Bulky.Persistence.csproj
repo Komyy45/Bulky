@@ -15,4 +15,8 @@
       <ProjectReference Include="..\Bulky.Core\Bulky.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Data\Seeds\" />
+    </ItemGroup>
+
 </Project>

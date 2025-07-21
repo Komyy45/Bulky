@@ -1,12 +1,13 @@
 
 using Bulky.Core;
 using Bulky.Persistence;
+using Bulky.Persistence.Data;
 
 namespace Bulky.Web
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,8 @@ namespace Bulky.Web
 
             var app = builder.Build();
 
+            var dbContextInitializer = app.Services.CreateScope().ServiceProvider.GetService<DbContextInitializer>();
+            await dbContextInitializer!.SeedAsync();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

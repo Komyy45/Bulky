@@ -15,7 +15,7 @@ namespace Bulky.Web.Controllers
 		}
 
 		// GET: CategoryController/Create
-		public ActionResult Create(CategoryDto categoryDto)
+		public ActionResult Create()
 		{
 			return View();
 		}
@@ -23,15 +23,18 @@ namespace Bulky.Web.Controllers
 		// POST: CategoryController/Create
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult Create(IFormCollection collection)
+		public async Task<ActionResult> Create(CategoryDto category, CancellationToken cancellationToken)
 		{
 			try
 			{
+				await categoryService.Create(category, cancellationToken);
+				TempData["Success"] = "Category Has Been Created Successfully";
 				return RedirectToAction(nameof(Index));
 			}
 			catch
 			{
-				return View();
+				TempData["Error"] = "An Error has been Occured.";
+				return View(category);
 			}
 		}
 
@@ -59,9 +62,19 @@ namespace Bulky.Web.Controllers
 		}
 
 		// GET: CategoryController/Delete/5
-		public ActionResult Delete(int id)
+		public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken)
 		{
-			return View();
+			try
+			{
+				await categoryService.DeleteByIdAsync(id, cancellationToken);
+				TempData["Success"] = "Category has been deleted successfully.";
+				return RedirectToAction("Index");
+			}
+			catch (Exception e)
+			{
+				TempData["Error"] = "An Error has been occured.s";
+				return View("Index");
+			}
 		}
 	}
 }

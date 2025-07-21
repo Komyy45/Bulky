@@ -1,0 +1,18 @@
+{
+  "version": "3.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "toastr@latest",
+      "destination": "wwwroot/lib/toastr"
+    },
+    {
+      "library": "sweetalert@latest",
+      "destination": "wwwroot/lib/sweetalert"
+    },
+    {
+      "library": "toastr.js@latest",
+      "destination": "wwwroot/lib/toastr.js/"
+    }
+  ]
+}

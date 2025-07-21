@@ -3,6 +3,8 @@
 	ViewData["Title"] = "Categories";
 }
 
+<partial name="_Toaster" />
+
 <div class="row py-3">
 	<div class="col-md-6">
 		<h1>Categories</h1>
@@ -13,26 +15,50 @@
 </div>
 
 <div class="row p-3 text-center">
-	<table class="table table-primary table-striped col-md-12">
+	<table class="table table-primary table-striped">
 		<thead>
-			<tr>
-				<th>Id</th>
-				<th>Name</th>
-			</tr>
+		<tr>
+			<th>Id</th>
+			<th>Name</th>
+			<th>Actions</th>
+		</tr>
 		</thead>
-		<tbody>
-			@foreach(var category in Model)
-			{
-				<tr>
-					<td>@category.Id</td>
-					<td>@category.Name</td>
-					<td class="d-flex gap-2 justify-content-center">
-						<a asp-controller="Category"asp-action="Edit" asp-route-id="@category.Id" class="btn btn-primary">Update</a>
-						<a asp-controller="Category" asp-action="Delete" asp-route-id="@category.Id" class="btn btn-danger">Delete</a>
-					</td>
-				</tr>
-			}
+		<tbody class="overflow-y-scroll">
+		@foreach(var category in Model)
+		{
+			<tr>
+				<td>@category.Id</td>
+				<td>@category.Name</td>
+				<td class="d-flex gap-2 justify-content-center">
+					<a asp-controller="Category" asp-action="Edit" asp-route-id="@category.Id" class="btn btn-primary rounded">Update</a>
+
+					<button class="btn btn-danger rounded" onclick="confirmDelete(@category.Id)">Delete</button>
+				</td>
+			</tr>
+		}
 		</tbody>
 	</table>
 </div>
+
+@section Scripts
+{
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script type="text/javascript">
+		function confirmDelete(id) {
+        			Swal.fire({
+        				title: "Are you sure?",
+        				text: "You won't be able to revert this!",
+        				icon: "warning",
+        				showCancelButton: true,
+        				confirmButtonColor: "#3085d6",
+        				cancelButtonColor: "#d33",
+        				confirmButtonText: "Yes, delete it!"
+        			}).then((result) => {
+        				if (result.isConfirmed) {
+        					window.location.href = `/Category/Delete/${id}`;
+        				}
+        			});
+        		}
+	</script>
+}
 

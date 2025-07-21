@@ -3,6 +3,7 @@
 	ViewData["Title"] = "Create Category";
 }
 
+<partial name="_Toaster" />
 
 <div class="row">
 	<div class="col-md-6">
@@ -14,13 +15,14 @@
 </div>
 
 <row class="row">
-	<form action="/" method="post">
+	<form asp-action="Create">
 		<div class="form-group">
 			<label>Name</label>
 			<input type="text" class="form-control" asp-for="Name"/>
 			<span asp-validation-for="Name"></span>
 		</div>
-		<div class="d-flex gap-2">
+		
+		<div class="d-flex gap-2 justify-content-end">
 			<button class="btn btn-success" type="submit">Create</button>
 			<button class="btn btn-info" type="reset">Reset</button>
 			<button class="btn btn-danger" type="button">Go Back</button>
