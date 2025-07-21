@@ -38,43 +38,38 @@ namespace Bulky.Web.Controllers
 			}
 		}
 
-		// GET: CategoryController/Edit/5
-		public ActionResult Edit(int id)
-		{
-			return View();
-		}
-
-		// POST: CategoryController/Edit/5
+		// POST: CategoryController/Edit
 		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public ActionResult Edit(CategoryDto categoryDto)
+		public async Task<IActionResult> Edit([FromBody] CategoryDto categoryDto)
 		{
-
-			categoryService.Update(categoryDto);
 			try
 			{
-				return RedirectToAction(nameof(Index));
+				await categoryService.Update(categoryDto);
+				TempData["Success"] = "Category has been updated successfully.";
+				return Ok();
 			}
 			catch
 			{
-				return View();
+				TempData["Error"] = "An Error has been Occured.";
+				return StatusCode(500);
 			}
+			
 		}
 
 		// GET: CategoryController/Delete/5
-		public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken)
+		public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
 		{
 			try
 			{
 				await categoryService.DeleteByIdAsync(id, cancellationToken);
 				TempData["Success"] = "Category has been deleted successfully.";
-				return RedirectToAction("Index");
 			}
 			catch (Exception e)
 			{
 				TempData["Error"] = "An Error has been occured.s";
-				return View("Index");
 			}
+			
+			return RedirectToAction("Index");
 		}
 	}
 }
