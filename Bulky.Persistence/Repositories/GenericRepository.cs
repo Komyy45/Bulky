@@ -1,0 +1,41 @@
+﻿using Bulky.Core.Contracts;
+using Bulky.Core.Entities.common;
+using Bulky.Persistence.Data;
+using Microsoft.EntityFrameworkCore;
+
+namespace Bulky.Persistence.Repositories;
+
+public class GenericRepository<TEntity, TKey>(DbContext dbContext) : IGenericRepository<TEntity, TKey>
+    where TEntity : BaseEntity<TKey>
+    where TKey : IEquatable<TKey>
+{
+    private readonly DbSet<TEntity> _dbSet = dbContext.Set<TEntity>();
+    
+    public async Task<IEnumerable<TEntity>> GetAll(CancellationToken cancellationToken, bool asNoTracking = false)
+    {
+        var query = _dbSet.AsQueryable();
+        if (asNoTracking) query = query.AsNoTracking();
+        return await query.ToListAsync(cancellationToken);
+    }
+
+    public async Task<TEntity?> Get(int id, CancellationToken cancellationToken)
+    {
+        return await _dbSet.FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken);
+    }
+
+    public async Task Add(TEntity entity, CancellationToken cancellationToken)
+    {
+        await _dbSet.AddAsync(entity, cancellationToken);
+    }
+
+    public void Update(TEntity entity)
+    {
+        _dbSet.Update(entity);
+    }
+
+    public async Task<int> Delete(int id, CancellationToken cancellationToken)
+    {
+        var query = _dbSet.Where(e => e.Id.Equals(id));
+        return await query.ExecuteDeleteAsync(cancellationToken);
+    }
+}

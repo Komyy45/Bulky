@@ -1,0 +1,38 @@
+﻿@model IEnumerable<CategoryDto>
+@{
+	ViewData["Title"] = "Categories";
+}
+
+<div class="row py-3">
+	<div class="col-md-6">
+		<h1>Categories</h1>
+	</div>
+	<div class="col-md-6 text-end">
+		<button class="btn btn-primary">Create Category</button>
+	</div>
+</div>
+
+<div class="row p-3 text-center">
+	<table class="table table-primary table-striped col-md-12">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Name</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach(var category in Model)
+			{
+				<tr>
+					<td>@category.Id</td>
+					<td>@category.Name</td>
+					<td class="d-flex gap-2 justify-content-center">
+						<a asp-controller="Category"asp-action="Edit" asp-route-id="@category.Id" class="btn btn-primary">Update</a>
+						<a asp-controller="Category" asp-action="Delete" asp-route-id="@category.Id" class="btn btn-danger">Delete</a>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
+

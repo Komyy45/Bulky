@@ -1,3 +1,7 @@
+
+using Bulky.Core;
+using Bulky.Persistence;
+
 namespace Bulky.Web
 {
     public class Program
@@ -8,8 +12,10 @@ namespace Bulky.Web
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddCoreServices().AddPersistenceServices(builder.Configuration);
 
             var app = builder.Build();
+
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
