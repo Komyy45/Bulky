@@ -26,7 +26,7 @@
     <div class="row mb-3">
         <div class="col-12">
             <label asp-for="Description" class="form-label"></label>
-            <textarea asp-for="Description" class="form-control"></textarea>
+            <textarea asp-for="Description" class="form-control" id="editor"></textarea>
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
     </div>
@@ -70,4 +70,10 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    
+    <script src="https://richtexteditor.com/richtexteditor/rte.js"></script>
+    <script src="https://richtexteditor.com/richtexteditor/plugins/all_plugins.js"></script>
+    <script type="text/javascript">
+        var editor1 = new RichTextEditor("#editor");
+    </script>
 }

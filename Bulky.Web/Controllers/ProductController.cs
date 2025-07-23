@@ -1,11 +1,9 @@
 ﻿using Bulky.Core.Contracts.Services;
-using Bulky.Core.Entities;
 using Bulky.Core.Models;
 using Bulky.Core.Models.Product;
 using Bulky.Web.Models;
 using Bulky.Web.Models.Product;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Bulky.Web.Controllers;
 
@@ -29,9 +27,28 @@ public class ProductController(IProductService productService) : Controller
         
         return View();
     }
-    
-    // GET
-    public IActionResult Create()
+
+	public async Task<IActionResult> Details(int id, CancellationToken cancellationToken)
+    {
+       var product = await productService.GetAsync(id, cancellationToken);
+
+        var productDetailsViewModel = new ProductDetailsViewModel()
+        {
+            Id = product.Id,
+            Title = product.Title,
+            Author = product.Author,
+            Description = product.Description,
+            ISBN = product.ISBN,
+            Price = product.Price,
+            CategoryId = product.CategoryId,
+            PictureUrl = null!
+        };
+
+       return View(productDetailsViewModel);
+    }
+
+	// GET
+	public IActionResult Create()
     {
         return View();
     }
@@ -129,9 +146,9 @@ public class ProductController(IProductService productService) : Controller
     public async Task<ActionResult<DataTableViewModel<ProductViewModel>>> GetAll(DataTableRequest request, CancellationToken cancellationToken)
     {
         
-        var response = await productService.GetAllAsync(request, cancellationToken);
+        var products = await productService.GetAllAsync(request, cancellationToken);
 
 
-		return Ok(response);
+		return Ok(products);
     }
 }

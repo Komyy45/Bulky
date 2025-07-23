@@ -1,6 +1,6 @@
-﻿using System.Globalization;
-using System.Linq.Expressions;
-using System.Text.RegularExpressions;
+﻿using System.Linq.Expressions;
+using System.Text;
+using Bulky.Core.Contracts.Ports.BlobStorage;
 using Bulky.Core.Contracts.Ports.Repositories;
 using Bulky.Core.Contracts.Services;
 using Bulky.Core.Entities;
@@ -11,7 +11,7 @@ using Bulky.Web.Models;
 
 namespace Bulky.Core.Services;
 
-public class ProductService(IUnitOfWork unitOfWork) : IProductService
+public class ProductService(IUnitOfWork unitOfWork, IBlobStorage blobStorage) : IProductService
 {
     private readonly IGenericRepository<Product, int> _productsRepository = unitOfWork.GetRepository<Product, int>(); 
     
@@ -37,7 +37,6 @@ public class ProductService(IUnitOfWork unitOfWork) : IProductService
         var productDtos = products.Select(e => new ProductDto(
             e.Id,
             e.Title,
-            e.Description,
             e.Author,
             e.ISBN,
             e.Price,
@@ -57,10 +56,16 @@ public class ProductService(IUnitOfWork unitOfWork) : IProductService
     {
         var product = await _productsRepository.Get(id, cancellationToken);
 
-        return new ProductDetailsDto(
+        var stream = await blobStorage.DownloadAsync("descriptions", product.Description);
+
+        using var streamReader = new StreamReader(stream);
+
+        var description = await streamReader.ReadToEndAsync();
+
+		return new ProductDetailsDto(
             product.Id,
             product.Title,
-            product.Description,
+            description,
             product.Author,
             product.ISBN,
             product.Price,
@@ -70,27 +75,36 @@ public class ProductService(IUnitOfWork unitOfWork) : IProductService
 
     public async Task UpdateAsync(ProductDetailsDto product)
     {
-        var updatedProduct = new Product()
-        {
-            Title = product.Title,
-            Description = product.Description,
-            Author = product.Author,
-            ISBN = product.ISBN,
-            Price = product.Price,
-            CategoryId = product.CategoryId
-        };
+        var existingProduct = await _productsRepository.Get(product.Id, CancellationToken.None);
+
+        if (existingProduct is null) throw new KeyNotFoundException();
+
+		using var stream = new MemoryStream(Encoding.UTF8.GetBytes(product.Description));
+		var descriptionUrl = await blobStorage.UploadAsync(stream, "descriptions", existingProduct!.Description);
+
+        existingProduct.Id = product.Id;
+        existingProduct.Title = product.Title;
+        existingProduct.Description = descriptionUrl;
+        existingProduct.Author = product.Author;
+        existingProduct.ISBN = product.ISBN;
+        existingProduct.Price = product.Price;
+        existingProduct.CategoryId = product.CategoryId;
         
-        _productsRepository.Update(updatedProduct);
+        _productsRepository.Update(existingProduct);
 
         await unitOfWork.CompleteAsync();
     }
 
     public async Task CreateAsync(ProductDetailsDto product, CancellationToken cancellationToken)
     {
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(product.Description));
+        var descriptionUrl = await blobStorage.UploadAsync(stream, "descriptions", $"{Guid.NewGuid()}.html");
+
+
         var updatedProduct = new Product()
         {
             Title = product.Title,
-            Description = product.Description,
+            Description = descriptionUrl,
             Author = product.Author,
             ISBN = product.ISBN,
             Price = product.Price,
