@@ -1,4 +1,5 @@
 
+using Bulky.BlobService;
 using Bulky.Core;
 using Bulky.Persistence;
 using Bulky.Persistence.Data;
@@ -13,7 +14,9 @@ namespace Bulky.Web
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddCoreServices().AddPersistenceServices(builder.Configuration);
+            builder.Services.AddCoreServices()
+                            .AddPersistenceServices(builder.Configuration)
+                            .AddBlobStorageServices(builder.Configuration);
 
             var app = builder.Build();
 

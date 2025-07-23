@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Bulky.BlobService\Bulky.BlobService.csproj" />
     <ProjectReference Include="..\Bulky.Core\Bulky.Core.csproj" />
     <ProjectReference Include="..\Bulky.Persistence\Bulky.Persistence.csproj" />
   </ItemGroup>

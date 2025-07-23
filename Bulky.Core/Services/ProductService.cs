@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
-using Bulky.Core.Contracts;
+using Bulky.Core.Contracts.Ports.Repositories;
 using Bulky.Core.Contracts.Services;
 using Bulky.Core.Entities;
 using Bulky.Core.Models;
@@ -18,9 +18,10 @@ public class ProductService(IUnitOfWork unitOfWork) : IProductService
     public async Task<DataTableViewModel<ProductDto>> GetAllAsync(DataTableRequest request, CancellationToken cancellationToken)
     {
 		Expression<Func<Product, bool>> filter = p => true;
-		if (!string.IsNullOrWhiteSpace(request.Search?.Value))
+        var isSearching = string.IsNullOrWhiteSpace(request.Search?.Value);
+		if (!isSearching)
 		{
-			var searchValue = request.Search.Value.Trim().ToLower();
+			var searchValue = request.Search!.Value.Trim().ToLower();
 			filter = p =>
 				p.Title.ToLower().Contains(searchValue) ||
 				p.Description.ToLower().Contains(searchValue) ||
@@ -47,7 +48,7 @@ public class ProductService(IUnitOfWork unitOfWork) : IProductService
         {
             Draw = request.Draw,
             RecordsTotal = totalCount,
-            RecordsFiltered = string.IsNullOrWhiteSpace(request.Search?.Value) ? totalCount : productDtos.Count(),
+            RecordsFiltered = isSearching ? totalCount : productDtos.Count(),
             Data = productDtos,
         };
     }

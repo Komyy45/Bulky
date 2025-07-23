@@ -1,4 +1,4 @@
-﻿using Bulky.Core.Contracts;
+﻿using Bulky.Core.Contracts.Ports.Repositories;
 using Bulky.Core.Contracts.Services;
 using Bulky.Core.Entities;
 using Bulky.Core.Models.Category;

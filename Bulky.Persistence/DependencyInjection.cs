@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Bulky.Core.Contracts;
+using Bulky.Core.Contracts.Ports.Repositories;
 using Bulky.Persistence.Data;
 using Bulky.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;

@@ -1,8 +1,7 @@
 ﻿using System.Linq.Expressions;
-using Bulky.Core.Contracts;
+using Bulky.Core.Contracts.Ports.Repositories;
 using Bulky.Core.Contracts.Specification;
 using Bulky.Core.Entities.common;
-using Bulky.Persistence.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bulky.Persistence.Repositories;
