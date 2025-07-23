@@ -56,7 +56,8 @@ namespace Bulky.Web.Controllers
 			
 		}
 
-		// GET: CategoryController/Delete/5
+		// POST: CategoryController/Delete/5
+		[HttpPost]
 		public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
 		{
 			try
