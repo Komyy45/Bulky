@@ -1,6 +1,4 @@
-﻿
-
-namespace Bulky.Web.Models.Product
+﻿namespace Bulky.Web.Areas.Admin.Models.Product
 {
 	public class ProductDetailsViewModel
 	{

@@ -3,7 +3,7 @@ using Bulky.Core.Models.Category;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Bulky.Web.Controllers
+namespace Bulky.Web.Areas.Admin.Controllers
 {
 	public class CategoryController(ICategoryService categoryService) : Controller
 	{
@@ -53,7 +53,7 @@ namespace Bulky.Web.Controllers
 				TempData["Error"] = "An Error has been Occured.";
 				return StatusCode(500);
 			}
-			
+
 		}
 
 		// POST: CategoryController/Delete/5
@@ -69,7 +69,7 @@ namespace Bulky.Web.Controllers
 			{
 				TempData["Error"] = "An Error has been occured.s";
 			}
-			
+
 			return RedirectToAction("Index");
 		}
 	}

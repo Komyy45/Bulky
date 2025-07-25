@@ -1,5 +1,4 @@
-﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
-@model IEnumerable<Bulky.Web.Models.Product.ProductViewModel>
+﻿@model IEnumerable<ProductViewModel>
 
 @{
     ViewBag.Title = "Products";
@@ -13,7 +12,7 @@
 		<h1>Products</h1>
 	</div>
 	<div class="col-md-6 text-end">
-		<a asp-controller="Product" asp-action="Create" class="btn btn-primary">Create Product</a>
+		<a asp-asp-area="Admin" asp-controller="Product" asp-action="Create" class="btn btn-primary">Create Product</a>
 	</div>
 </div>
 
@@ -35,11 +34,11 @@
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>	
 	<script src="~/js/dataTable.js"></script>
 	<script type="text/javascript">
-        initDataTable('table', 'Product', [
+        initDataTable('table', 'Admin/Product', [
             {
                 data: 'title',
                 render: function (data, type, row) {
-                    return `<a href="/Product/Details/${row.id}">${data}</a>`;
+                    return `<a href="/Admin/Product/Details/${row.id}">${data}</a>`;
                 }
             },
             { data: 'author' },
@@ -52,8 +51,8 @@
                 render: function (data, type, row) {
                     return `
                                 <div class="d-flex align-items-center gap-2">
-                                    <a href="/Product/Edit/${row.id}" class="btn btn-sm btn-primary">Edit</a>
-                                    <button class="btn btn-sm btn-danger delete-btn" onclick="confirmDelete(${row.id}, '/Product/Delete')">Delete</button>
+                                    <a href="/Admin/Product/Edit/${row.id}" class="btn btn-sm btn-primary">Edit</a>
+                                    <button class="btn btn-sm btn-danger delete-btn" onclick="confirmDelete(${row.id}, '/Admin/Product/Delete')">Delete</button>
                                 </div>
                             `;
                 }
