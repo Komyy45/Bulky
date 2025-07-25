@@ -32,67 +32,36 @@
 
 @section Scripts
 {
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>	
+	<script src="~/js/dataTable.js"></script>
 	<script type="text/javascript">
-
-        $(document).ready(function() {
-                        $('#table').DataTable({
-                serverSide: true,
-                processing: true,
-                ajax: {
-                    url: '/Product/GetAll',
-                    method: "POST"
-                },
-                columns: [
-                    {
-                        data: 'title',
-                        render: function (data, type, row) {
-                            return `<a href="/Product/Details/${row.id}">${data}</a>`;
-                        }
-                    },
-                    { data: 'author' },
-                    { data: 'isbn' },
-                    { data: 'price' },
-                    {
-                        data: null,
-                        orderable: false,
-                        searchable: true,
-                        render: function (data, type, row) {
-                            return `
+        initDataTable('table', 'Product', [
+            {
+                data: 'title',
+                render: function (data, type, row) {
+                    return `<a href="/Product/Details/${row.id}">${data}</a>`;
+                }
+            },
+            { data: 'author' },
+            { data: 'isbn' },
+            { data: 'price' },
+            {
+                data: null,
+                orderable: false,
+                searchable: true,
+                render: function (data, type, row) {
+                    return `
                                 <div class="d-flex align-items-center gap-2">
                                     <a href="/Product/Edit/${row.id}" class="btn btn-sm btn-primary">Edit</a>
-                                    <button class="btn btn-sm btn-danger delete-btn" onclick="confirmDelete(${row.id})">Delete</button>
+                                    <button class="btn btn-sm btn-danger delete-btn" onclick="confirmDelete(${row.id}, '/Product/Delete')">Delete</button>
                                 </div>
                             `;
-                        }
-                    }
-                ]
-            });
-            })
-
-    function confirmDelete(id) {
-                Swal.fire({
-                    title: "Are you sure?",
-                    text: "You won't be able to revert this!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Yes, delete it!"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        fetch(`/Product/Delete/${id}`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            }
-                        })
-                        .then(response => {
-                            location.reload();
-                        });
-                }});
+                }
             }
-	</script>
+        ]);
+    </script>
+	<script src="~/js/sweetAlert.js"></script>
+
 }
 
 

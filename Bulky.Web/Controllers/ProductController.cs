@@ -1,36 +1,29 @@
 ﻿using Bulky.Core.Contracts.Services;
-using Bulky.Core.Models;
+using Bulky.Core.Models.Common;
 using Bulky.Core.Models.Product;
-using Bulky.Web.Models;
 using Bulky.Web.Models.Product;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bulky.Web.Controllers;
 
-public class ProductController(IProductService productService) : Controller
+public class ProductController(IConfiguration configuration, IProductService productService) : Controller
 {
-    // GET
-    public async Task<IActionResult> Index(CancellationToken cancellationToken)
+    // GET : Product/Index
+    [HttpGet]
+    public IActionResult Index(CancellationToken cancellationToken)
     {
-        //var products = await productService.GetAllAsync(cancellationToken);
-
-        //var productViewModels = products.Select(e => new ProductViewModel()
-        //{
-        //   Id = e.Id,
-        //   Title = e.Title,
-        //   Description = e.Description,
-        //   Author = e.Author,
-        //   ISBN = e.ISBN,
-        //   Price = e.Price,
-        //   Category = e.Category
-        //});
-        
         return View();
     }
 
+
+    // GET : Product/Details/{id}
+    [HttpGet]
 	public async Task<IActionResult> Details(int id, CancellationToken cancellationToken)
     {
+        ViewBag.configuration = configuration;
        var product = await productService.GetAsync(id, cancellationToken);
+
+        if (product is null) return NotFound();
 
         var productDetailsViewModel = new ProductDetailsViewModel()
         {
@@ -41,7 +34,7 @@ public class ProductController(IProductService productService) : Controller
             ISBN = product.ISBN,
             Price = product.Price,
             CategoryId = product.CategoryId,
-            PictureUrl = null!
+            PictureUrl = product.Picture!
         };
 
        return View(productDetailsViewModel);
@@ -50,22 +43,26 @@ public class ProductController(IProductService productService) : Controller
 	// GET
 	public IActionResult Create()
     {
-        return View();
+		ViewBag.configuration = configuration;
+		return View();
     }
     
     // POST
     [HttpPost]
     public async Task<IActionResult> Create(ProductCreateEditViewModel product, CancellationToken cancellationToken)
     {
-        var productDto = new ProductDetailsDto(
+        var productDto = new ProductCreateEditDto(
             product.Id,
             product.Title,
-            product.Description,
+			product.ExistingPicture,
+            product.Picture,
+			product.Description,
             product.Author,
             product.ISBN,
             product.Price,
             product.CategoryId
         );
+
         try
         {
             await productService.CreateAsync(productDto, cancellationToken);
@@ -84,7 +81,10 @@ public class ProductController(IProductService productService) : Controller
     // GET
     public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
     {
-        var product = await productService.GetAsync(id, cancellationToken);
+		var product = await productService.GetAsync(id, cancellationToken);
+
+        if (product is null) return NotFound();
+
         var productViewModel = new ProductCreateEditViewModel()
         {
             Id = product.Id,
@@ -93,8 +93,10 @@ public class ProductController(IProductService productService) : Controller
             ISBN = product.ISBN,
             CategoryId = product.CategoryId,
             Price = product.Price,
-            Author = product.Author
+            Author = product.Author,
+            ExistingPicture = product.Picture
         };
+
         return View(productViewModel);
     }
     
@@ -102,17 +104,21 @@ public class ProductController(IProductService productService) : Controller
     [HttpPost]
     public async Task<IActionResult> Edit(ProductCreateEditViewModel product)
     {
-        var productDto = new ProductDetailsDto(
-            product.Id,
-            product.Title,
-            product.Description,
-            product.Author,
-            product.ISBN,
-            product.Price,
-            product.CategoryId
-        );
-        try
-        {
+		var productDto = new ProductCreateEditDto(
+			product.Id,
+			product.Title,
+			product.ExistingPicture,
+			product.Picture,
+			product.Description,
+			product.Author,
+			product.ISBN,
+			product.Price,
+			product.CategoryId
+		);
+
+
+		try
+		{
             await productService.UpdateAsync(productDto);
             TempData["Success"] = "Product has been updated Successfully.";
         }

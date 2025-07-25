@@ -1,4 +1,4 @@
-﻿namespace Bulky.Web.Models
+﻿namespace Bulky.Core.Models.Common
 {
 	public class DataTableRequest
 	{

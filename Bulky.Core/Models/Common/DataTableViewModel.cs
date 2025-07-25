@@ -1,4 +1,4 @@
-﻿namespace Bulky.Core.Models
+﻿namespace Bulky.Core.Models.Common
 {
 	public class DataTableViewModel<T>
 	{

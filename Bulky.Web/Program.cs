@@ -18,6 +18,8 @@ namespace Bulky.Web
                             .AddPersistenceServices(builder.Configuration)
                             .AddBlobStorageServices(builder.Configuration);
 
+            builder.Services.AddSingleton<IConfiguration>(c => builder.Configuration);
+
             var app = builder.Build();
 
             var dbContextInitializer = app.Services.CreateScope().ServiceProvider.GetService<DbContextInitializer>();

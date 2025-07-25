@@ -33,7 +33,7 @@
 				<td>@category.Name</td>
 				<td class="d-flex gap-2 justify-content-center">
 						<button type="button" class="btn btn-primary rounded" onclick="editCategory(@category.Id, '@category.Name')">Update</button>
-						<button type="button" class="btn btn-danger rounded" onclick="confirmDelete(@category.Id)">Delete</button>
+						<button type="button" class="btn btn-danger rounded" onclick="confirmDelete(@category.Id, '/Category/Delete/')">Delete</button>
 				</td>
 			</tr>
 		}
@@ -44,56 +44,7 @@
 @section Scripts
 {
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-	<script type="text/javascript">
-		
-	function editCategory(id, currentName) {
-    	Swal.fire({
-    		title: 'Edit Category',
-    		input: 'text',
-    		inputLabel: 'Category Name',
-    		inputValue: currentName,
-    		showCancelButton: true,
-    		confirmButtonText: 'Update',
-    		inputValidator: (value) => {
-    			if (!value) {
-    				return 'You need to write a category name!';
-    			}
-    		}
-    	}).then(result => {
-    		if (result.isConfirmed) {
-    			const name = result.value;
-    			fetch(`/Category/Edit`, {
-    				method: 'POST',
-    				headers: {
-    					'Content-Type': 'application/json'
-    				},
-    				body: JSON.stringify({ id, name })
-    			}).then(res =>  location.reload() )
-		}
-			});
-	}
-		function confirmDelete(id) {
-        			  Swal.fire({
-                            title: "Are you sure?",
-                            text: "You won't be able to revert this!",
-                            icon: "warning",
-                            showCancelButton: true,
-                            confirmButtonColor: "#3085d6",
-                            cancelButtonColor: "#d33",
-                            confirmButtonText: "Yes, delete it!"
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                fetch(`/Category/Delete/${id}`, {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    }
-                                })
-                                .then(response => {
-                                    location.reload();
-                                });
-        		}});
-					  }
-	</script>
-	}
+	<script src="~/js/sweetAlert.Edit.js"></script>
+	<script src="~/js/sweetAlert.js"></script>
+}
 

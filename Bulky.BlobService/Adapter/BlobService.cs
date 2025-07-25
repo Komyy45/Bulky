@@ -41,7 +41,7 @@ namespace Bulky.BlobService.Adapter
 
 			var blobContainerClient = blobServiceClient.GetBlobContainerClient(container);
 
-			string fileName = Path.Combine(file.Name,"_", new Guid().ToString(), ".", Path.GetExtension(file.FileName));
+			string fileName = Path.Combine(file.Name + "_", $"{new Guid()}.{Path.GetExtension(file.FileName)}");
 
 			using var stream = file.OpenReadStream();
 

@@ -5,8 +5,8 @@ namespace Bulky.Web.Models.Product;
 public class ProductCreateEditViewModel
 {
     public int Id { get; set; }
-
-	public IFormFile Picture { get; set; }
+	public string? ExistingPicture { get; set; }
+	public IFormFile? Picture { get; set; }
 
 	[Required]
     [MaxLength(100)]

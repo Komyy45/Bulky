@@ -4,10 +4,9 @@ using Bulky.Core.Contracts.Ports.BlobStorage;
 using Bulky.Core.Contracts.Ports.Repositories;
 using Bulky.Core.Contracts.Services;
 using Bulky.Core.Entities;
-using Bulky.Core.Models;
+using Bulky.Core.Models.Common;
 using Bulky.Core.Models.Product;
 using Bulky.Core.Specification.Products;
-using Bulky.Web.Models;
 
 namespace Bulky.Core.Services;
 
@@ -19,6 +18,7 @@ public class ProductService(IUnitOfWork unitOfWork, IBlobStorage blobStorage) : 
     {
 		Expression<Func<Product, bool>> filter = p => true;
         var isSearching = string.IsNullOrWhiteSpace(request.Search?.Value);
+
 		if (!isSearching)
 		{
 			var searchValue = request.Search!.Value.Trim().ToLower();
@@ -32,6 +32,7 @@ public class ProductService(IUnitOfWork unitOfWork, IBlobStorage blobStorage) : 
         var totalCount = await _productsRepository.CountAsync(cancellationToken);
 
 		var spec = new GetAllProductsSpecification(filter, request.Start, request.Length);
+
         var products = await _productsRepository.GetAll(spec, cancellationToken, true);
 
         var productDtos = products.Select(e => new ProductDto(
@@ -65,6 +66,7 @@ public class ProductService(IUnitOfWork unitOfWork, IBlobStorage blobStorage) : 
 		return new ProductDetailsDto(
             product.Id,
             product.Title,
+            product.Picture,
             description,
             product.Author,
             product.ISBN,
@@ -73,14 +75,25 @@ public class ProductService(IUnitOfWork unitOfWork, IBlobStorage blobStorage) : 
         );
     }
 
-    public async Task UpdateAsync(ProductDetailsDto product)
+    public async Task UpdateAsync(ProductCreateEditDto product)
     {
         var existingProduct = await _productsRepository.Get(product.Id, CancellationToken.None);
 
         if (existingProduct is null) throw new KeyNotFoundException();
 
 		using var stream = new MemoryStream(Encoding.UTF8.GetBytes(product.Description));
+
 		var descriptionUrl = await blobStorage.UploadAsync(stream, "descriptions", existingProduct!.Description);
+
+        if(product.Picture is not null)
+        {
+            if(product.ExistingPictureUrl is not null)
+            {
+                await blobStorage.UploadAsync(product.Picture.OpenReadStream(), "images", product.ExistingPictureUrl);
+            }
+
+            existingProduct.Picture = await blobStorage.UploadAsync(product.Picture, "images");
+        }
 
         existingProduct.Id = product.Id;
         existingProduct.Title = product.Title;
@@ -95,23 +108,27 @@ public class ProductService(IUnitOfWork unitOfWork, IBlobStorage blobStorage) : 
         await unitOfWork.CompleteAsync();
     }
 
-    public async Task CreateAsync(ProductDetailsDto product, CancellationToken cancellationToken)
+    public async Task CreateAsync(ProductCreateEditDto product, CancellationToken cancellationToken)
     {
-        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(product.Description));
-        var descriptionUrl = await blobStorage.UploadAsync(stream, "descriptions", $"{Guid.NewGuid()}.html");
+		var createdProduct = new Product()
+		{
+			Title = product.Title,
+			Author = product.Author,
+			ISBN = product.ISBN,
+			Price = product.Price,
+			CategoryId = product.CategoryId,
+		};
 
+		using var stream = new MemoryStream(Encoding.UTF8.GetBytes(product.Description));
 
-        var updatedProduct = new Product()
+		createdProduct.Description = await blobStorage.UploadAsync(stream, "descriptions", $"{Guid.NewGuid()}.html");
+
+        if(product.Picture is not null)
         {
-            Title = product.Title,
-            Description = descriptionUrl,
-            Author = product.Author,
-            ISBN = product.ISBN,
-            Price = product.Price,
-            CategoryId = product.CategoryId
-        };
+			createdProduct.Picture = await blobStorage.UploadAsync(product.Picture, "images");
+		}
         
-        await _productsRepository.Add(updatedProduct, cancellationToken);
+        await _productsRepository.Add(createdProduct, cancellationToken);
 
         await unitOfWork.CompleteAsync();
     }
