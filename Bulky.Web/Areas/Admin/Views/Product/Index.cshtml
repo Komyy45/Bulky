@@ -1,0 +1,80 @@
+﻿@using Bulky.Core.Entities
+@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+@model IEnumerable<ProductViewModel>
+@inject UserManager<ApplicationUser> userManager
+@{
+    ViewBag.Title = "Products";
+    Layout = "_Layout";
+    var userEmail = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    bool isInRole = false;
+    if(userEmail is not null)
+        isInRole = await userManager.IsInRoleAsync(new ApplicationUser(){Id = userEmail}, "Admin");
+}
+
+<partial name="_Toaster" />
+
+<div class="row py-3">
+    <div class="col-md-6">
+        <h1>Products</h1>
+    </div>
+    @if(isInRole)
+    {
+        <div class="col-md-6 text-end">
+            <a asp-asp-area="Admin" asp-controller="Product" asp-action="Create" class="btn btn-primary">Create Product</a>
+        </div>
+    }
+
+</div>
+
+<div class="row p-3 text-center">
+    <table id="table" class="table table-dark table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>ISBN</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+@section Scripts
+{
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>	
+    <script src="~/js/dataTable.js"></script>
+    <script type="text/javascript">
+        initDataTable('table', 'Admin/Product', [
+        {
+        data: 'title',
+        render: function (data, type, row) {
+        return `<a href="/Admin/Product/Details/${row.id}">${data}</a>`;
+        }
+        },
+        { data: 'author' },
+        { data: 'isbn' },
+        { data: 'price' },
+        {
+        data: null,
+        orderable: false,
+        searchable: true,
+
+        render: function (data, type, row) {
+        return `
+        @if (isInRole)
+        {
+            <div class="d-flex align-items-center gap-2">
+                <a href="/Admin/Product/Edit/${row.id}" class="btn btn-sm btn-primary">Edit</a>
+                <button class="btn btn-sm btn-danger delete-btn" onclick="confirmDelete(${row.id}, '/Admin/Product/Delete')">Delete</button>
+            </div>
+        } `;
+                }
+            }
+        ]);
+    </script>
+	<script src="~/js/sweetAlert.js"></script>
+
+}
+
+

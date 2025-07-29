@@ -1,5 +1,5 @@
 ﻿using System.Collections.Concurrent;
-using Bulky.Core.Contracts;
+using Bulky.Core.Contracts.Ports.Repositories;
 using Bulky.Core.Entities.common;
 using Bulky.Persistence.Data;
 

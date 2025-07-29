@@ -1,0 +1,50 @@
+﻿@using Bulky.Core.Entities
+@model IEnumerable<CategoryDto>
+
+@{
+	ViewData["Title"] = "Categories";
+}
+
+<partial name="_Toaster" />
+
+<div class="row py-3">
+	<div class="col-md-6">
+		<h1>Categories</h1>
+	</div>
+	<div class="col-md-6 text-end">
+		<a asp-controller="Category" asp-action="Create" class="btn btn-primary">Create Category</a>
+	</div>
+</div>
+
+<div class="row p-3 text-center">
+	<table class="table table-primary table-striped">
+		<thead>
+		<tr>
+			<th>Id</th>
+			<th>Name</th>
+			<th>Actions</th>
+		</tr>
+		</thead>
+		<tbody class="overflow-y-scroll">
+		@foreach(var category in Model)
+		{
+			<tr>
+				<td>@category.Id</td>
+				<td>@category.Name</td>
+				<td class="d-flex gap-2 justify-content-center">
+						<button type="button" class="btn btn-primary rounded" onclick="editCategory(@category.Id, '@category.Name')">Update</button>
+						<button type="button" class="btn btn-danger rounded" onclick="confirmDelete(@category.Id, '/Admin/Category/Delete')">Delete</button>
+				</td>
+			</tr>
+		}
+		</tbody>
+	</table>
+</div>
+
+@section Scripts
+{
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script src="~/js/sweetAlert.Edit.js"></script>
+	<script src="~/js/sweetAlert.js"></script>
+}
+
