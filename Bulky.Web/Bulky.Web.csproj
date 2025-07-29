@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -18,8 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Bulky.BlobService\Bulky.BlobService.csproj" />
+    <ProjectReference Include="..\Bulky.BlobService\Bulky.BlobStorage.Adapter.csproj" />
     <ProjectReference Include="..\Bulky.Core\Bulky.Core.csproj" />
+    <ProjectReference Include="..\Bulky.Email.Adapter\Bulky.Email.Adapter.csproj" />
     <ProjectReference Include="..\Bulky.Persistence\Bulky.Persistence.csproj" />
   </ItemGroup>
 

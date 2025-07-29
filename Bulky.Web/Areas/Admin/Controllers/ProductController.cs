@@ -2,6 +2,7 @@
 using Bulky.Core.Models.Common;
 using Bulky.Core.Models.Product;
 using Bulky.Web.Areas.Admin.Models.Product;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bulky.Web.Areas.Admin.Controllers;
@@ -41,6 +42,7 @@ public class ProductController(IConfiguration configuration, IProductService pro
 	}
 
 	// GET
+	[Authorize(Roles = "Admin")]
 	public IActionResult Create()
 	{
 		ViewBag.configuration = configuration;
@@ -49,6 +51,7 @@ public class ProductController(IConfiguration configuration, IProductService pro
 
 	// POST
 	[HttpPost]
+	[Authorize(Roles = "Admin")]
 	public async Task<IActionResult> Create(ProductCreateEditViewModel product, CancellationToken cancellationToken)
 	{
 		var productDto = new ProductCreateEditDto(
@@ -79,6 +82,7 @@ public class ProductController(IConfiguration configuration, IProductService pro
 
 
 	// GET
+	[Authorize(Roles = "Admin")]
 	public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
 	{
 		var product = await productService.GetAsync(id, cancellationToken);
@@ -102,6 +106,7 @@ public class ProductController(IConfiguration configuration, IProductService pro
 
 	// POST
 	[HttpPost]
+	[Authorize(Roles = "Admin")]
 	public async Task<IActionResult> Edit(ProductCreateEditViewModel product)
 	{
 		var productDto = new ProductCreateEditDto(
@@ -133,6 +138,7 @@ public class ProductController(IConfiguration configuration, IProductService pro
 
 	// POST
 	[HttpPost]
+	[Authorize(Roles = "Admin")]
 	public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
 	{
 		try

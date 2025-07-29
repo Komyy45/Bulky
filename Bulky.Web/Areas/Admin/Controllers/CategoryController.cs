@@ -1,10 +1,11 @@
 ﻿using Bulky.Core.Contracts.Services;
 using Bulky.Core.Models.Category;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bulky.Web.Areas.Admin.Controllers
 {
+	[Authorize(Roles = "Admin")]
 	public class CategoryController(ICategoryService categoryService) : Controller
 	{
 		// GET: CategoryController

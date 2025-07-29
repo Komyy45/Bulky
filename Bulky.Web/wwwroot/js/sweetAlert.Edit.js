@@ -4,7 +4,7 @@
         input: 'text',
         inputLabel: 'Category Name',
         inputValue: currentName,
-        showCancelButton: true,
+        showCancelButton: true, 
         confirmButtonText: 'Update',
         inputValidator: (value) => {
             if (!value) {
@@ -14,7 +14,7 @@
     }).then(result => {
         if (result.isConfirmed) {
             const name = result.value;
-            fetch(`/Category/Edit`, {
+            fetch(`/Admin/Category/Edit`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

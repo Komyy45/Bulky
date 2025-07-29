@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Email Confirmation";
+    bool isSuccess = ViewBag.IsSuccess ?? false;
+    string message = ViewBag.Message as string ?? "Something went wrong.";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow rounded p-4">
+                <div class="text-center">
+                    @if (isSuccess)
+                    {
+                        <h2 class="text-success">✔ Email Confirmed</h2>
+                    }
+                    else
+                    {
+                        <h2 class="text-danger">✖ Confirmation Failed</h2>
+                    }
+
+                    <p class="mt-3">@message</p>
+
+                    @if (!isSuccess)
+                    {
+                        <a href="/Identity/Account/ResendConfirmation" class="btn btn-primary mt-3">Resend Confirmation Email</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
