@@ -1,5 +1,5 @@
 ﻿using Azure.Storage.Blobs;
-using Bulky.Core.Contracts.Ports.BlobStorage;
+using Bulky.Core.Ports.Out;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,7 +11,7 @@ namespace Bulky.BlobService
 		{
 			services.AddSingleton(_ => new BlobServiceClient(configuration.GetConnectionString("AzureStorage")));
 
-			services.AddSingleton<IBlobStorage, Bulky.BlobService.Adapter.BlobService>();
+			services.AddSingleton<IBlobStorage, BlobStorage.Adapter.BlobService>();
 
 			return services;
 		}

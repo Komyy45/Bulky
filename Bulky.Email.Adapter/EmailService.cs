@@ -1,5 +1,5 @@
-﻿using Bulky.Core.Contracts.Ports.EmailService;
-using Bulky.Core.Models.Email;
+﻿using Bulky.Core.Application.Models.Email;
+using Bulky.Core.Ports.Out;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
@@ -26,18 +26,18 @@ namespace Bulky.Email.Adapter
 				Text = message.Body
 			};
 
-			using (var client = new SmtpClient())
-			{
-				client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+			using var client = new SmtpClient();
 
-				client.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
-				client.Authenticate(
-					configuration["MailKit:Email"],
-					configuration["MailKit:Password"]
-				);
-				await client.SendAsync(mimeMessage);
-				await client.DisconnectAsync(true);
-			}
+			client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+
+			client.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+			client.Authenticate(
+				configuration["MailKit:Email"],
+				configuration["MailKit:Password"]
+			);
+			await client.SendAsync(mimeMessage);
+			await client.DisconnectAsync(true);
+			
 		}
 	}
 }

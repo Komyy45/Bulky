@@ -1,4 +1,5 @@
 using Bulky.Persistence.Data;
+using Microsoft.AspNetCore.Builder;
 
 namespace Bulky.Web
 {
@@ -26,7 +27,9 @@ namespace Bulky.Web
 
             app.UseHttpsRedirection();
 
-            app.UseStaticFiles();
+			app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+			app.UseStaticFiles();
 
             app.UseRouting();
 

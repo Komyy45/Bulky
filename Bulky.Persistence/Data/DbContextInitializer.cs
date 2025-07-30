@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using Bulky.Core.Entities;
+using Bulky.Core.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 
 namespace Bulky.Persistence.Data;

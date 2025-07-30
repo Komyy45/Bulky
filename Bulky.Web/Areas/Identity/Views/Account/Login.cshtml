@@ -6,8 +6,23 @@
 }
 
 <h2>Login</h2>
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        <ul>
+            @foreach (var modelState in ViewData.ModelState.Values)
+            {
+                foreach (var error in modelState.Errors)
+                {
+                    <li>@error.ErrorMessage</li>
+                }
+            }
+        </ul>
+    </div>
+}
 
 <form asp-action="Login">
+
     <partial name="_AuthFieldsPartial" model="Model" />
 
     <div class="my-2 d-flex justify-content-between align-items-center">

@@ -1,5 +1,5 @@
-﻿using Bulky.Core.Contracts.Services;
-using Bulky.Core.Services;
+﻿using Bulky.Core.Application.Services;
+using Bulky.Core.Ports.In;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Bulky.Core;

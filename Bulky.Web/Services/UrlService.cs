@@ -1,18 +1,13 @@
-﻿using Bulky.Core.Contracts.Ports.UrlService;
+﻿using Bulky.Core.Ports.Out;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace Bulky.Web.Services
 {
-	public class UrlService : IUrlService
+	public class UrlService(IUrlHelperFactory urlHelperFactory, IActionContextAccessor actionContextAccessor) : IUrlService
 	{
-		private readonly IUrlHelper _urlHelper;
-
-		public UrlService(IUrlHelperFactory urlHelperFactory, IActionContextAccessor actionContextAccessor)
-		{ 
-			_urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext!);
-		}
+		private readonly IUrlHelper _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext!);
 
 		public string BuildUrl(string action, string controller, string area, object? queryParams = null)
 		{
