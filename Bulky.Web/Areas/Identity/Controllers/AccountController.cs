@@ -1,9 +1,8 @@
-﻿using Bulky.Core.Contracts.Services;
-using Bulky.Core.Exceptions.Identity;
-using Bulky.Core.Models.Identity;
+﻿using Bulky.Core.Application.Models.Identity;
 using Bulky.Web.Areas.Identity.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Bulky.Core.Ports.In;
 
 namespace Bulky.Web.Areas.Identity.Controllers
 {
@@ -25,18 +24,23 @@ namespace Bulky.Web.Areas.Identity.Controllers
 		{
 
 			var registerDto = new RegisterDto(registerViewModel.Email, registerViewModel.Username, registerViewModel.Password, registerViewModel.Name, registerViewModel.Role);
+			
+			var result = await authService.Register(registerDto);
 
-			try
+			if(result.IsSuccess)
 			{
-				await authService.Register(registerDto);
 				TempData["Success"] = "User registered successfully";
 			}
-			catch (Exception e)
+			else
 			{
-				TempData["Error"] = e.Message;
+				foreach (var error in result.Errors!)
+					ModelState.AddModelError(error.Code, error.Message);
+
+				TempData["Error"] = "An Error has been Occured";
+
 				return View(registerViewModel);
 			}
-			
+
 			return RedirectToAction(nameof(SendConfirmationEmail), new { email = registerDto.Email });
 		}
 
@@ -52,25 +56,31 @@ namespace Bulky.Web.Areas.Identity.Controllers
 				loginViewModel.Password
 				);
 
-			try
+			var result = await authService.Login(loginDto);
+
+			if(result.IsSuccess)
 			{
-				var loginResult = await authService.Login(loginDto);
-
-				if (loginResult.IsLockedOut)
-					throw new AccountLockedException();
-
-				if (!loginResult.Succeeded) 
+				if(result.Value.Succeeded)
+				{
+					TempData["Success"] = "You've Logged In Successfully";
+					return RedirectToAction("Index", "Home", new { area = "Customer" });
+				}
+				else if (result.Value.IsLockedOut)
+					TempData["Error"] = "Your Account is locked right now, try again later";
+				else if (result.Value.IsNotAllowed)
 					return RedirectToAction(nameof(SendConfirmationEmail), new { email = loginDto.Email });
-
-				TempData["Success"] = "You have loggedin successfully";
+				else
+					TempData["Error"] = "Invalid Login!";
 			}
-			catch(Exception ex)
+			else
 			{
-				TempData["Error"] = ex.Message;
-				return View(loginViewModel);
+				foreach (var error in result.Errors!)
+					ModelState.AddModelError(error.Code, error.Message);
+
+				TempData["Error"] = "An Error has been Occured";
 			}
 
-			return RedirectToAction("Index", "Home", new { area = "Customer" });
+			return View(loginViewModel);	
 		}
 
 		[Authorize]
@@ -84,7 +94,13 @@ namespace Bulky.Web.Areas.Identity.Controllers
 		[HttpGet]
 		public async Task<IActionResult> SendConfirmationEmail(string email)
 		{
-			await authService.SendConfirmationEmail(email);
+			var result = await authService.SendConfirmationEmail(email);
+
+			if(result.IsFailure)
+			{
+				var error = result.Errors!.FirstOrDefault();
+			 	TempData["Error"] = error!.Message;
+			}
 
 			return View();
 		}
@@ -92,15 +108,17 @@ namespace Bulky.Web.Areas.Identity.Controllers
 	
 		public async Task<IActionResult> ConfirmAccount(string id, string token)
 		{
-			var isConfirmed = await authService.ConfirmAccount(id, token);
+			var result = await authService.ConfirmAccount(id, token);
 
-			if (isConfirmed)
+			if (result.IsSuccess)
 			{
 				ViewBag.Message = "Your email has been confirmed successfully!";
 				ViewBag.IsSuccess = true;
 			}
 			else
 			{
+				foreach (var error in result.Errors!)
+					ModelState.AddModelError(error.Code, error.Message);
 				ViewBag.Message = "Invalid or expired confirmation link.";
 				ViewBag.IsSuccess = false;
 			}

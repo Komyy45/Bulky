@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
-using Bulky.Core.Contracts.Ports.Repositories;
-using Bulky.Core.Entities.common;
+using Bulky.Core.Domain.Entities.common;
+using Bulky.Core.Ports.Out;
 using Bulky.Persistence.Data;
 
 namespace Bulky.Persistence.Repositories;

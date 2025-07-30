@@ -1,7 +1,7 @@
 ﻿using Bulky.BlobService;
 using Bulky.Core;
-using Bulky.Core.Contracts.Ports.UrlService;
-using Bulky.Core.Entities;
+using Bulky.Core.Domain.Entities;
+using Bulky.Core.Ports.Out;
 using Bulky.Email.Adapter;
 using Bulky.Persistence;
 using Bulky.Persistence.Data;

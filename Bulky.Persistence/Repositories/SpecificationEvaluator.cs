@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Bulky.Core.Contracts.Specification;
-using Bulky.Core.Entities.common;
+using Bulky.Core.Domain.Entities.common;
+using Bulky.Core.Domain.Specification;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bulky.Persistence.Repositories

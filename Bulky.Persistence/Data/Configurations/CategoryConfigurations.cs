@@ -1,4 +1,4 @@
-﻿using Bulky.Core.Entities;
+﻿using Bulky.Core.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Bulky.Persistence.Data.Configurations;

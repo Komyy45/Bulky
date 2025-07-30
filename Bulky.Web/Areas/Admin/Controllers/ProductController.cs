@@ -1,13 +1,13 @@
-﻿using Bulky.Core.Contracts.Services;
-using Bulky.Core.Models.Common;
-using Bulky.Core.Models.Product;
+﻿using Bulky.Core.Application.Models.Common;
+using Bulky.Core.Application.Models.Product;
+using Bulky.Core.Ports.In;
 using Bulky.Web.Areas.Admin.Models.Product;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bulky.Web.Areas.Admin.Controllers;
 
-public class ProductController(IConfiguration configuration, IProductService productService) : Controller
+public class ProductController(IProductService productService) : Controller
 {
 	// GET : Product/Index
 	[HttpGet]
@@ -21,10 +21,14 @@ public class ProductController(IConfiguration configuration, IProductService pro
 	[HttpGet]
 	public async Task<IActionResult> Details(int id, CancellationToken cancellationToken)
 	{
-		ViewBag.configuration = configuration;
-		var product = await productService.GetAsync(id, cancellationToken);
+		var result = await productService.GetAsync(id, cancellationToken);
 
-		if (product is null) return NotFound();
+		if(result.IsFailure)
+		{
+			return RedirectToAction("Error", "Home", new { area = "Customer" });
+		}
+
+		var product = result.Value;
 
 		var productDetailsViewModel = new ProductDetailsViewModel()
 		{
@@ -45,7 +49,6 @@ public class ProductController(IConfiguration configuration, IProductService pro
 	[Authorize(Roles = "Admin")]
 	public IActionResult Create()
 	{
-		ViewBag.configuration = configuration;
 		return View();
 	}
 
@@ -66,15 +69,14 @@ public class ProductController(IConfiguration configuration, IProductService pro
 			product.CategoryId
 		);
 
-		try
+		var result = await productService.CreateAsync(productDto, cancellationToken);
+
+		if(result.IsSuccess)
 		{
-			await productService.CreateAsync(productDto, cancellationToken);
-			TempData["Success"] = "Product has been updated Successfully.";
-		}
-		catch (Exception e)
-		{
-			TempData["Error"] = "An Error has been Occured.";
-			return View(product);
+			if(result.Value)
+				TempData["Success"] = "Product has been updated Successfully.";
+			else
+				TempData["Error"] = String.Join(" ", result.Errors!.Select(e => e.Message));
 		}
 
 		return RedirectToAction(nameof(Index));
@@ -85,9 +87,15 @@ public class ProductController(IConfiguration configuration, IProductService pro
 	[Authorize(Roles = "Admin")]
 	public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
 	{
-		var product = await productService.GetAsync(id, cancellationToken);
+		var result = await productService.GetAsync(id, cancellationToken);
 
-		if (product is null) return NotFound();
+
+		if(result.IsFailure)
+		{
+			return RedirectToAction("PageNotFound", "Home", new { area = "Customer" });
+		}
+
+		var product = result.Value;
 
 		var productViewModel = new ProductCreateEditViewModel()
 		{
@@ -109,6 +117,9 @@ public class ProductController(IConfiguration configuration, IProductService pro
 	[Authorize(Roles = "Admin")]
 	public async Task<IActionResult> Edit(ProductCreateEditViewModel product)
 	{
+		if (!ModelState.IsValid) return View(product);
+
+
 		var productDto = new ProductCreateEditDto(
 			product.Id,
 			product.Title,
@@ -120,18 +131,17 @@ public class ProductController(IConfiguration configuration, IProductService pro
 			product.Price,
 			product.CategoryId
 		);
+		
+		var result = await productService.UpdateAsync(productDto);
 
+		if(result.IsSuccess)
+		{
+			if(result.Value)
+				TempData["Success"] = "Product has been updated Successfully.";
+			else
+				TempData["Error"] = "An Error has been Occured.";
+		}
 
-		try
-		{
-			await productService.UpdateAsync(productDto);
-			TempData["Success"] = "Product has been updated Successfully.";
-		}
-		catch (Exception e)
-		{
-			TempData["Error"] = "An Error has been Occured.";
-			return View(product);
-		}
 
 		return RedirectToAction(nameof(Index));
 	}
@@ -141,14 +151,14 @@ public class ProductController(IConfiguration configuration, IProductService pro
 	[Authorize(Roles = "Admin")]
 	public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
 	{
-		try
+		var result = await productService.DeleteAsync(id, cancellationToken);
+
+		if (result.IsSuccess)
 		{
-			await productService.DeleteAsync(id, cancellationToken);
-			TempData["Success"] = "Product has been deleted Successfully.";
-		}
-		catch (Exception e)
-		{
-			TempData["Error"] = "An Error has been Occured.";
+			if (result.Value)
+				TempData["Success"] = "Product has been deleted Successfully.";
+			else
+				TempData["Error"] = "An Error has been Occured.";
 		}
 
 		return RedirectToAction(nameof(Index));
@@ -159,7 +169,6 @@ public class ProductController(IConfiguration configuration, IProductService pro
 	{
 
 		var products = await productService.GetAllAsync(request, cancellationToken);
-
 
 		return Ok(products);
 	}

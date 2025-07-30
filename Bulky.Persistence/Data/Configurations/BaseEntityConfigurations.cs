@@ -1,4 +1,4 @@
-﻿using Bulky.Core.Entities.common;
+﻿using Bulky.Core.Domain.Entities.common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
