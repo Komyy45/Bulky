@@ -23,6 +23,10 @@ namespace Bulky.Core.Domain.Specification
 			Criteria = criteria;
 		}
 
+		public BaseSpecification()
+		{
+		}
+
 		public void AddIncludes(params Expression<Func<TEntity, object>>[] includes)
 		{
 			Includes.AddRange(includes);

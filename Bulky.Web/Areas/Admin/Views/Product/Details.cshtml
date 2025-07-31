@@ -1,7 +1,7 @@
 ﻿@model ProductDetailsViewModel
 @inject IConfiguration Configuration;
 @{
-    ViewData["Title"] = "Product Details";
+ViewData["Title"] = "Product Details";
 }
 
 <div class="container mt-5">
@@ -30,6 +30,9 @@
                 <dd class="col-sm-9">@Html.Raw(Model.Description)</dd>
             </dl>
 
+            
+                
+            <a asp-area="Customer" asp-controller="Basket" asp-action="Add" asp-route-id="@Model.Id" class="btn btn-success">Add to Cart</a>
             <a asp-controller="Product" asp-action="Index" class="btn btn-secondary">Back to List</a>
         </div>
     </div>

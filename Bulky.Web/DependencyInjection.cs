@@ -7,7 +7,9 @@ using Bulky.Persistence;
 using Bulky.Persistence.Data;
 using Bulky.Web.Services;
 using Microsoft.AspNetCore.Identity;
+using Bulky.Basket.Adapter;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using StackExchange.Redis;
 
 namespace Bulky.Web
 {
@@ -15,6 +17,7 @@ namespace Bulky.Web
 	{
 		public static IServiceCollection AddWebApplicationServices(this IServiceCollection services, IConfiguration configuration)
 		{
+
 			services.AddControllersWithViews();
 			services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 			{
@@ -37,6 +40,11 @@ namespace Bulky.Web
 							.AddPersistenceServices(configuration)
 							.AddBlobStorageServices(configuration)
 							.AddMailServices();
+
+			services.AddSingleton<IConnectionMultiplexer>(serviceProvider => ConnectionMultiplexer.Connect(configuration.GetConnectionString("Redis")!));
+
+			services.AddScoped(typeof(IBasketRepository), typeof(BasketRepository));
+
 
 			services.AddSingleton<IConfiguration>(c => configuration);
 

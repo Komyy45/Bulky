@@ -6,6 +6,7 @@ using Bulky.Core.Ports.In;
 
 namespace Bulky.Web.Areas.Identity.Controllers
 {
+	[Area("Identity")]
 	public class AccountController(IAuthService authService) : Controller
 	{
 		public IActionResult Login()

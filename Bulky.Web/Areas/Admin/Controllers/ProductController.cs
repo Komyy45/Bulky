@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Bulky.Web.Areas.Admin.Controllers;
 
+[Area("Admin")]
 public class ProductController(IProductService productService) : Controller
 {
 	// GET : Product/Index

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Bulky.Web.Areas.Admin.Controllers
 {
 	[Authorize(Roles = "Admin")]
+	[Area("Admin")]
 	public class CategoryController(ICategoryService categoryService) : Controller
 	{
 		// GET: CategoryController
